@@ -1,4 +1,4 @@
-import { observable, computed, autorun, asReference, asFlat, asStructure, action, reaction } from "mobx";
+import { observable, computed, autorun, asReference, asFlat, asStructure, asMap, action, reaction } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -24,8 +24,12 @@ class Store {
       console.log("Object As Normal:", this.objNormal);
     });
 
+    // autorun(() => {
+    //   console.log("Object As Structure:", this.objAsStructure);
+    // });
+
     autorun(() => {
-      console.log("Object As Structure:", this.objAsStructure);
+      console.log("Object As Map:", this.objAsMap);
     });
   }
 
@@ -36,6 +40,7 @@ class Store {
   obj1 = { name: 'Dhruv', lastname: 'Kapasi' };
   @observable objNormal = { name: 'Dhruv', lastname: 'Kapasi' };
   @observable objAsStructure = asStructure(this.obj1);
+  @observable objAsMap = asMap({ name: 'Dhruv', lastname: 'Kapasi' });
 
   modify() {
     this.todos[1] = "Blue";
@@ -58,9 +63,18 @@ class Store {
     this.todosAsFlat = ["Violet"]
     //this.todosAsFlat.push("Green");
 
-    this.objNormal = { car: 'BMW' };
-    this.objNormal.name = 'Lipika';
+    // this.objNormal = { car: 'BMW' };
+    // this.objNormal.name = 'Lipika';
     this.objAsStructure = { name: 'Dharmesh', lastname: 'Kapasi' };
+
+    this.objAsMap.work = { name: 'kpmg', location: 'gurgaon' };
+    console.log('Checkhing..')
+    this.objAsMap.work.location = 'noida';
+
+    console.log('Checkhing Normal..')
+    this.objNormal.work = { name: 'kpmg', location: 'gurgaon' };
+    this.objNormal.work.location = 'noida';
+    this.objNormal.name = 'Lpika'
   }
 }
 
