@@ -1,4 +1,4 @@
-import { observable, computed, autorun, asReference, asFlat, asStructure, asMap, action, reaction } from "mobx";
+import { observable, computed, autorun, asReference, action, reaction, toJS } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -17,30 +17,30 @@ class Store {
     // });
 
     // autorun(() => {
-    //   console.log("Todos As Flat:", this.todosAsFlat);
+    //   console.log("Todos As Flat:", toJS(this.todosAsFlat));
     // });
-
-    autorun(() => {
-      console.log("Object As Normal:", this.objNormal);
-    });
 
     // autorun(() => {
-    //   console.log("Object As Structure:", this.objAsStructure);
+    //   console.log("Object As Normal:", this.objNormal);
+    // });
+
+    // autorun(() => {
+    //   console.log("Object As Structure:", toJS(this.objAsStructure));
     // });
 
     autorun(() => {
-      console.log("Object As Map:", this.objAsMap);
+      console.log("Object As Map:", toJS(this.objAsMap));
     });
   }
 
   @observable todos = ['White', 'Black'];
-  @observable todosAsReference = asReference(['White', 'Black']);
-  @observable todosAsFlat = asFlat(['White', 'Black']);
+  @observable.ref todosAsReference = ['White', 'Black'];
+  @observable.shallow todosAsFlat = ['White', 'Black'];
 
-  obj1 = { name: 'Dhruv', lastname: 'Kapasi' };
-  @observable objNormal = { name: 'Dhruv', lastname: 'Kapasi' };
-  @observable objAsStructure = asStructure(this.obj1);
-  @observable objAsMap = asMap({ name: 'Dhruv', lastname: 'Kapasi' });
+  obj1 = { name: 'Dhruv', lastname: 'Kapasi', 'address': { city: 'Delhi' } };
+  @observable objNormal = { name: 'Dhruv', lastname: 'Kapasi', 'address': { city: 'Delhi' } };
+  @observable.struct objAsStructure = this.obj1;
+  objAsMap = observable.map({ name: 'Dhruv', lastname: 'Kapasi' });
 
   modify() {
     this.todos[1] = "Blue";
@@ -48,6 +48,8 @@ class Store {
     this.todos.shift();
     this.todos = ["Gray"];
     this.todos.push("Green");
+    this.todos = ["Purple", []]
+    this.todos[1][0] = ["Violet"]
 
     this.todosAsReference[1] = "Blue";
     this.todosAsReference[0] = "Red";
@@ -59,19 +61,14 @@ class Store {
     this.todosAsFlat[0] = "Red";
     this.todosAsFlat.shift();
     this.todosAsFlat = ["Gray"]
-    this.todosAsFlat = ["Purple"]
-    this.todosAsFlat = ["Violet"]
-    //this.todosAsFlat.push("Green");
+    this.todosAsFlat = ["Purple", []]
+    this.todosAsFlat[1][0] = ["Violet"]
 
-    // this.objNormal = { car: 'BMW' };
-    // this.objNormal.name = 'Lipika';
-    this.objAsStructure = { name: 'Dharmesh', lastname: 'Kapasi' };
+    this.objAsStructure = { name: 'Dhruv', lastname: 'Kapasi', 'address': { city: 'New York' } };
 
     this.objAsMap.work = { name: 'kpmg', location: 'gurgaon' };
-    console.log('Checkhing..')
     this.objAsMap.work.location = 'noida';
 
-    console.log('Checkhing Normal..')
     this.objNormal.work = { name: 'kpmg', location: 'gurgaon' };
     this.objNormal.work.location = 'noida';
     this.objNormal.name = 'Lpika'
